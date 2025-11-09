@@ -18,18 +18,17 @@ jobs:
 
       - name: matrix-fba5e83
         run: |
-          echo "Running matrix job for node ${ { matrix.node-version } }"
+          echo "Running matrix job for node ${{ matrix.node-version }}"
           echo "Matrix context: ${{ toJson(matrix) }}"
           echo "GITHUB_RUN_ID: $GITHUB_RUN_ID"
 
-      - name: Setup Node (cache optional)
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Generate build artifact
         run: |
-          # Create a unique, non-empty artifact that includes the variant and timestamp
           echo "Build artifact for node v${{ matrix.node-version }}" > build_output.txt
           echo "Run ID: $GITHUB_RUN_ID" >> build_output.txt
           echo "Created: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> build_output.txt
@@ -44,7 +43,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          # MUST use prefix build-fba5e83-<variant>
           name: build-fba5e83-node-${{ matrix.node-version }}
           path: build_output.txt
           retention-days: 7
